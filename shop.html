@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="description" content="Shop Glittergrej her. Nøgleringe, keychains, postkort og meget andet." />
+    <meta name="keywords" content="Glittergrej,glitter,glimmer,handmade,Aarhus,Århus,handmade,keychain,nøglering,vulva,yoni,girly" />
+    <meta name="author" content="Glittergrej" />
+
+    <title>Glittergrej ✨ Shop</title>
+
+    <!-- GOOGLE FONT -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-32x32.png" />
+  </head>
+
+  <body>
+    <!-- HEADER MED LOGO OG NAVIGATION -->
+    <header>
+      <nav>
+        <div id="header-ikoner">
+          <img id="shopping-cart-mobile" src="img/ikoner/shopping-cart-icon.png" alt="Glittergrej shopping cart ikon" />
+          <div id="menuknap">☰</div>
+        </div>
+        <div class="menu-container">
+          <div id="logo">
+            <a href="index.html">
+              <img src="img/logo/glittergrej-logo.png" alt="Glittergrej logo" class="glitter-logo" />
+            </a>
+          </div>
+        </div>
+
+        <ul id="menu" class="hidden">
+          <li><a href="index.html">Forside</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li>
+            <a href="om-glittergrej.html">Om Glittergrej</a>
+            <ul class="dropdown">
+              <li><a href="events.html">- Events</a></li>
+              <li><a href="forhandlere.html">- Forhandlere</a></li>
+            </ul>
+          </li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+
+          <li class="searchbar">
+            <input type="text" placeholder="Søg..." name="search" class="search-input" />
+            <img src="img/ikoner/searchbar-icon.png" alt="Søgebar ikon" />
+            <img src="img/ikoner/shopping-cart-icon.png" alt="shoppingcart" class="shopping-cart-desktop" />
+          </li>
+
+          <li class="social-media social-media-container">
+            <img src="img/ikoner/glittergrej-facebook-icon.png" alt="Glittergrej Facebook ikon" />
+
+            <img src="img/ikoner/glittergrej-instagram-icon.png" alt="Glittergrej Instagram ikon" />
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <!-- PIL TIL TOP -->
+    <div id="pil-til-top">
+      <a href="shop.html#logo"><img src="img/arrow-to-top.png" alt="Glittergrej pil til toppen af siden" /></a>
+    </div>
+    <section class="whole">
+      <div class="filtre">
+        <button class="filter valgt" data-item="alle">Alle Produkter</button>
+        <button class="filter" data-item="4">Illustrationer</button>
+        <button class="filter" data-item="5">Nøgleringe</button>
+        <button class="filter" data-item="6">Jul</button>
+        <button class="filter" data-item="7">Andet</button>
+      </div>
+
+      <section id="container"></section>
+      <template>
+        <article id="grid-article">
+          <img src="#" alt="" class="produktbillede1" />
+          <h1 class="produktnavn"></h1>
+          <p class="produktpris"></p>
+        </article>
+      </template>
+    </section>
+
+    <footer>
+      <div class="sectionwrapper">
+        <div class="col1">
+          <a href="#">Handelsbetingelser</a>
+          <a href="#">Cookies og privatlivspolitik</a>
+          <p>
+            @Glittergrej 2020 <br />
+            CVR: 40044167
+          </p>
+          <p>Betalingsmetoder:</p>
+          <img src="img/ikoner/Visa-Logo.png" alt="visa-logo" class="img-kort" />
+          <img src="img/ikoner/mastercard-vector-logo.png" alt="mastercard-logo" class="img-kort" />
+        </div>
+
+        <div class="sectionwrapper2">
+          <div class="col2">
+            <a href="#">
+              <img src="img/ikoner/glittergrej-mail-icon.png" alt="glittergrej-mail" class="img-logo" />
+            </a>
+            <a href="#">kys@glittergrej.dk</a>
+          </div>
+          <div class="col1 col2">
+            <a href="https://www.facebook.com/glittergrej">
+              <img src="img/ikoner/glittergrej-facebook-icon.png" alt="glittergrej-facebook" class="img-logo" />
+            </a>
+            <a href="https://www.instagram.com/glittergrej/">
+              <img src="img/ikoner/glittergrej-instagram-icon.png" alt="glittergrej-instagram" class="img-logo" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      //FILTER
+      let filter = "alle";
+      let produkter;
+      let container = document.querySelector("#container");
+      let temp = document.querySelector("template");
+
+      //URL + ID
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get("id");
+
+      const link = "http://creativeworld.dk/kea02/tema10/glittergrej/wordpress/wp-json/wp/v2/produkter?per_page=100";
+
+      //Load Site + function
+      document.addEventListener("DOMContentLoaded", hentData);
+
+      async function hentData() {
+        const respons = await fetch(link);
+        produkter = await respons.json();
+        addEventListenersToButtons();
+        vis(produkter);
+      }
+
+      function vis(produkter) {
+        //Løber igennem array "produkter" fra JSON (WP)
+        container.innerHTML = "";
+        //forEach Loop
+        produkter.forEach((produkt) => {
+          if (filter == "alle" || filter == produkt.categories) {
+            console.log(produkt);
+            const klon = temp.cloneNode(true).content;
+            klon.querySelector(".produktnavn").textContent = produkt.produktnavn;
+            klon.querySelector(".produktbillede1").src = produkt.produktbillede_1.guid;
+            klon.querySelector(".produktpris").textContent = produkt.produktpris + " kr.";
+
+            //EventListener "click" + visDetaljer
+            klon.querySelector("article").addEventListener("click", () => visDetaljer(produkt));
+
+            container.appendChild(klon);
+          }
+        });
+        //Alle produkters ID
+        produkter.forEach((produkt) => {
+          if (id == produkt.id) {
+            visDetaljer(produkt);
+          }
+        });
+      }
+
+      //Location.href til Singlview
+      function visDetaljer(produkt) {
+        location.href = `singleview.html?id=${produkt.id}`;
+      }
+
+      //Kommer fra hentData
+      function addEventListenersToButtons() {
+        document.querySelectorAll(".filter").forEach((btn) => {
+          btn.addEventListener("click", filterBTNs);
+        });
+      }
+
+      //tilføj kategori til knap
+      function filterBTNs() {
+        filter = this.dataset.item;
+        document.querySelectorAll(".filter").forEach((btn) => {
+          btn.classList.remove("valgt");
+        });
+
+        this.classList.add("valgt");
+        vis(produkter);
+      }
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>
